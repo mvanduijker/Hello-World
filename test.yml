@@ -1,2 +1,26 @@
 conveyor:
-  hello: world
+  repository:
+    type: git
+    url: https://github.com/mvanduijker/Hello-World
+  targets:
+    staging:
+      transport:
+        type: file
+        host: ~
+        path: %target.dir%
+        user: ~
+        pass: ~
+  build:
+    dir: %build.dir%
+    derived:
+      - { source: '*', derived: conveyor.phar }
+      - { source: composer.lock, derived: vendor/ }
+    tasks:
+      -
+        type: shell
+        command: |
+          if [ -f %patch.path% ]; then  \
+            git init;                   \
+            git apply %patch.path%;     \
+            rm -rf .git/;               \
+          fi;
